@@ -62,10 +62,6 @@
                     <input type="password" id="password" name="password" class="form-control"
                            placeholder="@lang('common.password')" required>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="password-confirm" name="password_confirmation" class="form-control"
-                           placeholder="@lang('common.password') confirmation" required>
-                </div>
                 <div class="col s6">
                     <button type="submit"
                             class="btn waves-effect waves-light blue right">@lang('common.submit')</button>

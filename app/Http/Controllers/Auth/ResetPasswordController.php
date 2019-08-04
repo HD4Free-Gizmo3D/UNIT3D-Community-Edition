@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\Group;
 use Illuminate\Support\Str;
+use App\Traits\NISTPassword;
 use App\Models\UserActivation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -36,21 +37,31 @@ class ResetPasswordController extends Controller
     {
         $validatingGroup = Group::select(['id'])->where('slug', '=', 'validating')->first();
         $memberGroup = Group::select(['id'])->where('slug', '=', 'user')->first();
-        $user->password = Hash::make($password);
-        $user->remember_token = Str::random(60);
 
-        if ($user->group_id === $validatingGroup->id) {
-            $user->group_id = $memberGroup->id;
+        $v = validator($request->all(), [
+            'password' => NISTPassword::register($password),
+        ]);
+
+        if ($v->fails()) {
+            return redirect()->route('login')
+                ->withErrors($v->errors());
+        } else {
+            $user->password = Hash::make($password);
+            $user->remember_token = Str::random(60);
+
+            if ($user->group_id === $validatingGroup->id) {
+                $user->group_id = $memberGroup->id;
+            }
+
+            $user->active = true;
+            $user->save();
+
+            // Activity Log
+            \LogActivity::addToLog('Member '.$user->username.' has successfully reset his/her password.');
+
+            UserActivation::where('user_id', '=', $user->id)->delete();
+
+            $this->guard()->login($user);
         }
-
-        $user->active = true;
-        $user->save();
-
-        // Activity Log
-        \LogActivity::addToLog('Member '.$user->username.' has successfully reset his/her password.');
-
-        UserActivation::where('user_id', '=', $user->id)->delete();
-
-        $this->guard()->login($user);
     }
 }

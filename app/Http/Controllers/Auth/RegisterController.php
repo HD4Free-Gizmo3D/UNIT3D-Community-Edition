@@ -93,40 +93,40 @@ class RegisterController extends Controller
         $user->group_id = $validatingGroup->id;
 
         if (config('email-white-blacklist.enabled') === 'allow' && config('captcha.enabled') == true) {
-            $v = validator($user->toArray(), [
+            $v = validator($request->all(), [
                 'username'             => 'required|alpha_dash|min:3|max:20|unique:users',
                 'email'                => 'required|email|max:255|unique:users|email_list:allow', // Whitelist
                 'password'             => NISTPassword::register($request->input('password')),
                 'g-recaptcha-response' => 'required|recaptcha',
             ]);
         } elseif (config('email-white-blacklist.enabled') === 'allow') {
-            $v = validator($user->toArray(), [
+            $v = validator($request->all(), [
                 'username' => 'required|alpha_dash|min:3|max:20|unique:users',
                 'email'    => 'required|email|max:255|unique:users|email_list:allow', // Whitelist
                 'password' => NISTPassword::register($request->input('password')),
             ]);
         } elseif (config('email-white-blacklist.enabled') === 'block' && config('captcha.enabled') == true) {
-            $v = validator($user->toArray(), [
+            $v = validator($request->all(), [
                 'username'             => 'required|alpha_dash|min:3|max:20|unique:users',
                 'email'                => 'required|email|max:255|unique:users|email_list:block', // Blacklist
                 'password'             => NISTPassword::register($request->input('password')),
                 'g-recaptcha-response' => 'required|recaptcha',
             ]);
         } elseif (config('email-white-blacklist.enabled') === 'block') {
-            $v = validator($user->toArray(), [
+            $v = validator($request->all(), [
                 'username' => 'required|alpha_dash|min:3|max:20|unique:users',
                 'email'    => 'required|email|max:255|unique:users|email_list:block', // Blacklist
                 'password' => NISTPassword::register($request->input('password')),
             ]);
         } elseif (config('captcha.enabled') == true) {
-            $v = validator($request->toArray(), [
+            $v = validator($request->all(), [
                 'username'             => 'required|alpha_dash|min:3|max:20|unique:users',
                 'email'                => 'required|email|max:255|unique:users',
                 'password'             => NISTPassword::register($request->input('password')),
                 'g-recaptcha-response' => 'required|recaptcha',
             ]);
         } else {
-            $v = validator($request->toArray(), [
+            $v = validator($request->all(), [
                 'username' => 'required|alpha_dash|min:3|max:20|unique:users', //Default
                 'email'    => 'required|email|max:255|unique:users',
                 'password' => NISTPassword::register($request->input('password')),
