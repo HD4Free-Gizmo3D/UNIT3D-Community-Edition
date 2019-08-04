@@ -360,25 +360,19 @@ class UserController extends Controller
         $user = auth()->user();
 
         $v = validator($request->all(), [
-            'old_password' => 'required',
-            'new_password' => NISTPassword::changePassword($request->new_password, $request->old_password),
+            'new_password' => NISTPassword::changePassword($request->input('new_password')),
         ]);
 
         if ($v->passes()) {
-            if (Hash::check($request->input('current_password'), $user->password)) {
-                $user->password = Hash::make($request->input('new_password'));
-                $user->save();
+            $user->password = Hash::make($request->input('new_password'));
+            $user->save();
 
-                // Activity Log
-                \LogActivity::addToLog("Member {$user->username} has changed there account password.");
+            // Activity Log
+            \LogActivity::addToLog("Member {$user->username} has changed there account password.");
 
-                auth()->logout();
+            auth()->logout();
 
-                return redirect()->to('/')->withSuccess('Your Password Has Been Reset');
-            } else {
-                return redirect()->route('user_security', ['slug' => $user->slug, 'id' => $user->id, 'hash' => '#password'])
-                    ->withErrors('Your Password Was Incorrect!');
-            }
+            return redirect()->to('login')->withSuccess('Your Password Has Been Reset');
         } else {
             return redirect()->route('user_security', ['slug' => $user->slug, 'id' => $user->id, 'hash' => '#password'])
                 ->withErrors($v->errors());

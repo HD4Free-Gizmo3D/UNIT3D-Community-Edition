@@ -14,6 +14,7 @@
         "bandwidth-throttle/token-bucket": "^2.0",
         "bepsvpt/secure-headers": "^5.3",
         "christofferok/laravel-emojione": "4.0",
+        "divineomega/laravel-password-exposed-validation-rule": "^2.0",
         "elhebert/laravel-sri": "^1.5",
         "emojione/assets": "^4.5",
         "fideloper/proxy": "^4.0",

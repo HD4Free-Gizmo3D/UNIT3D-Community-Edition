@@ -48,8 +48,6 @@
                             <div class="help-block">@lang('user.change-password-help').</div>
                         <hr>
                             <div class="form-group">
-                                <label for="old_password">Current Password</label>
-                                <input type="password" name="old_password" class="form-control" placeholder="Old Password">
                                 <label for="new_password">New Password</label>
                                 <input type="password" name="new_password" class="form-control" placeholder="New Password">
                             </div>
