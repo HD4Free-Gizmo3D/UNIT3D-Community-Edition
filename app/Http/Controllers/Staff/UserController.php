@@ -203,7 +203,7 @@ class UserController extends Controller
         ]);
 
         if ($v->passes()) {
-            $user->password = Hash::make($request->input('new_password'), $user->username);
+            $user->password = Hash::make($request->input('new_password'));
             $user->save();
 
             // Activity Log
